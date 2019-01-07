@@ -1,1 +1,1 @@
-# dnnCom
+# dnnComm
