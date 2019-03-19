@@ -190,5 +190,3 @@ def train(config):
                 saving_name = config.Model_path + 'SNR_' + str(SNRdb) + '/DetectionModel_SNR_' + str(SNRdb) + '_Pilot_' + str(P) + '_epoch_' + str(epoch)
                 saver.save(sess, saving_name)         
         print("optimization finished")
-
-

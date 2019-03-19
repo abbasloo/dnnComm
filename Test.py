@@ -1,8 +1,4 @@
-
-
-
-def test():        
-        
+def test():                
         training_epochs = 20
         batch_size = 256
         display_step = 5
@@ -34,7 +30,6 @@ def test():
                 'encoder_b4': tf.Variable(tf.truncated_normal([n_output],stddev=0.1)),          
             
             }
-        
             # Encoder Hidden layer with sigmoid activation #1
             #layer_1 = tf.nn.sigmoid(tf.add(tf.matmul(x, weights['encoder_h1']), biases['encoder_b1']))
             layer_1 = tf.nn.relu(tf.add(tf.matmul(x, weights['encoder_h1']), biases['encoder_b1']))
@@ -43,9 +38,7 @@ def test():
             layer_4 = tf.nn.sigmoid(tf.add(tf.matmul(layer_3, weights['encoder_h4']), biases['encoder_b4']))
             return layer_4
         # Building the decoder
-
         #encoder_op = encoder(X)
-
         #for network_idx in range(0, int(K*mu/n_output)):
         #    y_pred_cur = encoder(X)
         #    if network_idx == 0:
@@ -56,17 +49,14 @@ def test():
         y_pred = encoder(X)
         # Targets (Labels) are the input data.
         y_true = Y
-
         # Define loss and optimizer, minimize the squared error
         cost = tf.reduce_mean(tf.pow(y_true - y_pred, 2))
         #cost = tf.reduce_mean(tf.pow(y_true - y_pred, 1))
         #cost = tf.reduce_mean(tf.abs(y_true-y_pred))
         learning_rate = tf.placeholder(tf.float32, shape=[])
         optimizer = tf.train.RMSPropOptimizer(learning_rate=learning_rate).minimize(cost)
-
         # Initializing the variables
         init = tf.global_variables_initializer()
-        
         # Generating Detection 
         #code = BinaryLinearBlockCode(parityCheckMatrix='./test/data/BCH_63_36_5_strip.alist')
         #code = PolarCode(6, SNR=4, mu = 16, rate = 0.5)
@@ -92,20 +82,11 @@ def test():
                     numbers_float = [float(x) for x in numbers_str]
                     h_response = np.asarray(numbers_float[0:int(len(numbers_float)/2)])+1j*np.asarray(numbers_float[int(len(numbers_float)/2):len(numbers_float)])
                     channel_response_set_test.append(h_response)
-
-
-
-
         print ('length of testing channel response', len(channel_response_set_test))
-
-
-
-        saver = tf.train.Saver()
-        
+        saver = tf.train.Saver()        
         init = tf.global_variables_initializer()
         config = tf.ConfigProto()
         config.gpu_options.allow_growth = True
-
         with tf.Session(config=config) as sess:
             sess.run(init)            
             saving_name = config.model_name
@@ -124,14 +105,12 @@ def test():
                 #input_labels_test.append(codeword)
                 input_labels_test.append(bits[config.pred_range])
                 #input_samples_test.append(np.concatenate((signal_train,signal_output)))
-                input_samples_test.append(signal_output)
-                        
+                input_samples_test.append(signal_output)                        
             batch_x = np.asarray(input_samples_test)
             batch_y = np.asarray(input_labels_test)
             encode_decode = sess.run(y_pred, feed_dict = {X:batch_x})
             mean_error = tf.reduce_mean(abs(y_pred - batch_y))                
-            BER = 1-tf.reduce_mean(tf.reduce_mean(tf.to_float(tf.equal(tf.sign(y_pred-0.5), tf.cast(tf.sign(batch_y-0.5),tf.float32))),1))
-                        
+            BER = 1-tf.reduce_mean(tf.reduce_mean(tf.to_float(tf.equal(tf.sign(y_pred-0.5), tf.cast(tf.sign(batch_y-0.5),tf.float32))),1))                        
             print("OFDM Detection QAM output number is", n_output, "SNR = ", SNRdb, "Num Pilot", P,"prediction and the mean error on test set are:", mean_error.eval({X:batch_x}), BER.eval({X:batch_x}))
 
 
