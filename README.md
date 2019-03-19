@@ -1,4 +1,4 @@
-# dnnComm: Deep OFDM Communication
+# dnnComm: Deep Neural Network for Wirless Communication  
 
 reference:
 
